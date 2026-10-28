@@ -18,7 +18,7 @@ jobs:
       with:
         msystem: UCRT64
         update: true
-        install: git mingw-w64-ucrt64-toolchain mingw-w64-ucrt64-raylib mingw-w64-ucrt64-enet
+        install: git mingw-w64-ucrt64-gcc mingw-w64-ucrt64-cmake mingw-w64-ucrt64-make mingw-w64-ucrt64-raylib mingw-w64-ucrt64-enet zip
 
     - name: Compila il progetto con CMake
       shell: msys2 {0}
