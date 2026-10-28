@@ -1,0 +1,52 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+    - 'v*' # Si attiva ogni volta che fai un push con un tag che inizia per 'v' (es. v1.0.0)
+
+jobs:
+  build:
+    runs-on: windows-latest # Compila direttamente su un ambiente Windows nel cloud
+
+    steps:
+    - name: Copia il codice del repository
+      uses: actions/checkout@v4
+
+    - name: Installa MSYS2 e le dipendenze (MinGW, Raylib, ENet)
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+        install: git mingw-w64-ucrt64-toolchain mingw-w64-ucrt64-raylib mingw-w64-ucrt64-enet
+
+    - name: Compila il progetto con CMake
+      shell: msys2 {0}
+      run: |
+        mkdir build
+        cd build
+        cmake -G "MinGW Makefiles" ..
+        cmake --build .
+
+    - name: Prepara i file per la release
+      shell: bash
+      run: |
+        mkdir -p release_folder
+        # Copia l'eseguibile e le DLL necessarie nella cartella di rilascio
+        cp build/TinyTillers.exe release_folder/
+        cp C:/msys/ucrt64/bin/raylib.dll release_folder/
+        cp C:/msys/ucrt64/bin/libenet-7.dll release_folder/
+        cp C:/msys/ucrt64/bin/libgcc_s_seh-1.dll release_folder/
+        cp C:/msys/ucrt64/bin/libstdc++-6.dll release_folder/
+        cp C:/msys/ucrt64/bin/libwinpthread-1.dll release_folder/
+        # Copia gli assets
+        cp -r assets release_folder/
+        # Crea un file .zip pronto per gli amici
+        cd release_folder && zip -r ../TinyTillers-Windows.zip *
+
+    - name: ZIP
+      uses: softprops/action-gh-release@v1
+      with:
+        files: TinyTillers-Windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

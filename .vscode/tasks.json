@@ -1,0 +1,57 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build Tiny Tillers",
+            "command": "C:/msys/ucrt64/bin/g++.exe",
+            "args": [
+                "-g",
+                "${workspaceFolder}/src/main.cpp",
+                "-o",
+                "${workspaceFolder}/TinyTillers.exe",
+                "-I",
+                "C:/msys/ucrt64/include",
+                "-L",
+                "C:/msys/ucrt64/lib",
+                "-mwindows",
+                "-lraylib",
+                "-lopengl32",
+                "-lgdi32",
+                "-lwinmm"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe build active file",
+            "command": "C:/msys/ucrt64/bin/g++.exe",
+            "args": [
+    "-g",
+    "${workspaceFolder}/src/*.cpp",
+    "-o",
+    "${workspaceFolder}/TinyTillers.exe",
+    "-I", "C:/msys/ucrt64/include",
+    "-L", "C:/msys/ucrt64/lib",
+    "-mwindows",
+    "-lraylib",
+    "-lenet",
+    "-lws2_32",
+    "-lwinmm",
+    "-lopengl32",
+    "-lgdi32"
+],
+            "options": {
+                "cwd": "C:/msys/ucrt64/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "compiler: C:/msys/ucrt64/bin/g++.exe"
+        }
+    ]
+}
