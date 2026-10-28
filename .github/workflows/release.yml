@@ -13,21 +13,25 @@ jobs:
     - name: Copia il codice del repository
       uses: actions/checkout@v4
 
-    - name: Prepara i file per la release
-      shell: bash
+    - name: Prepara i file e crea lo ZIP
+      shell: pwsh
       run: |
-        mkdir -p release_folder
-        # Copia l'eseguibile dalla cartella build alla cartella di rilascio
-        cp build/TinyTillers.exe release_folder/
-        # Copia le DLL necessarie dalla radice del progetto
-        cp libenet-7.dll release_folder/
-        cp glfw3.dll release_folder/
-        cp libgcc_s_seh-1.dll release_folder/
-        cp libstdc++-6.dll release_folder/
-        cp libwinpthread-1.dll release_folder/
+        # Crea la cartella di rilascio
+        New-Item -ItemType Directory -Force -Path release_folder
+        
+        # Copia l'eseguibile e le DLL
+        Copy-Item "build/TinyTillers.exe" -Destination "release_folder/"
+        Copy-Item "libenet-7.dll" -Destination "release_folder/"
+        Copy-Item "glfw3.dll" -Destination "release_folder/"
+        Copy-Item "libgcc_s_seh-1.dll" -Destination "release_folder/"
+        Copy-Item "libstdc++-6.dll" -Destination "release_folder/"
+        Copy-Item "libwinpthread-1.dll" -Destination "release_folder/"
+        
         # Copia la cartella assets
-        cp -r assets release_folder/
-        cd release_folder && zip -r ../TinyTillers-Windows.zip *
+        Copy-Item "assets" -Destination "release_folder/" -Recurse
+        
+        # Comprime in ZIP usando PowerShell nativo
+        Compress-Archive -Path "release_folder\*" -DestinationPath "TinyTillers-Windows.zip" -Force
 
     - name: Crea la Release su GitHub e carica lo ZIP
       uses: softprops/action-gh-release@v1
